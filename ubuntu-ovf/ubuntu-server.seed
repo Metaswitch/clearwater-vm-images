@@ -1,0 +1,120 @@
+# Ignore questions with a priority less than:
+# Choices: critical, high, medium, low
+d-i     debconf/priority        select  critical
+
+### Localization
+# Locale sets language and country.
+d-i debian-installer/locale string en_US
+
+# Keyboard selection.
+# Disable automatic (interactive) keymap detection.
+d-i console-setup/ask_detect boolean false
+d-i console-setup/layoutcode string us
+
+### Network configuration
+# netcfg will choose an interface that has link if possible. This makes it
+# skip displaying a list if there is more than one interface.
+d-i netcfg/choose_interface select auto
+
+# Any hostname and domain names assigned from dhcp take precedence over
+# values set here. However, setting the values still prevents the questions
+# from being shown, even if values come from dhcp.
+d-i netcfg/get_hostname string cw-aio
+d-i netcfg/get_domain string example.com
+
+# Disable that annoying WEP key dialog.
+d-i netcfg/wireless_wep string
+
+### Mirror settings
+d-i mirror/country string manual
+d-i mirror/http/hostname string us.archive.ubuntu.com
+d-i mirror/http/directory string /ubuntu
+d-i mirror/http/proxy string
+
+### Clock and time zone setup
+# Controls whether or not the hardware clock is set to UTC.
+d-i clock-setup/utc boolean true
+
+# You may set this to any valid setting for $TZ; see the contents of
+# /usr/share/zoneinfo/ for valid values.
+d-i time/zone string UTC
+
+# Controls whether to use NTP to set the clock during the install
+d-i clock-setup/ntp boolean true
+
+### Partitioning
+# Specify a disk to partition. The device name must be given in traditional
+# non-devfs format.
+# Note: A disk must be specified, unless the system has only one disk.
+# For example, to use the first SCSI/SATA hard disk:
+d-i partman-auto/disk string /dev/sda
+# In addition, you'll need to specify the method to use.
+# The presently available methods are: "regular", "lvm" and "crypto"
+d-i partman-auto/method string regular
+
+# You can put an entire recipe into the preconfiguration file in one
+# (logical) line.
+d-i partman-auto/expert_recipe string                         \
+      boot-root ::                                            \
+              8000 1 8000 ext4                                \
+                      $primary{ } $bootable{ }                \
+                      method{ format } format{ }              \
+                      use_filesystem{ } filesystem{ ext4 }    \
+                      mountpoint{ / }                         \
+              .
+
+# This makes partman automatically partition without confirmation, provided
+# that you told it what to do using one of the methods above.
+d-i partman/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+# Do you want to return to the partitioning menu?
+partman-basicfilesystems partman-basicfilesystems/no_swap boolean false
+
+### Base system installation
+# The kernel image (meta) package to be installed; "none" can be used if no
+# kernel is to be installed.
+d-i base-installer/kernel/image string linux-generic
+
+### Account setup
+# To create a normal user account.
+d-i passwd/user-fullname string Ubuntu User
+d-i passwd/username string ubuntu
+# Normal user's password, either in clear text
+d-i passwd/user-password password cw-aio
+d-i passwd/user-password-again password cw-aio
+# The installer will warn about weak passwords. If you are sure you know
+# what you're doing and want to override it, uncomment this.
+d-i user-setup/allow-password-weak boolean true
+
+# Set to true if you want to encrypt the first user's home directory.
+d-i user-setup/encrypt-home boolean false
+
+### Package selection
+tasksel tasksel/first multiselect
+pkgsel  pkgsel/include  string openssh-server curl
+
+# This command is run just before the install finishes, but when there is
+# still a usable /target directory. You can chroot to /target and use it
+# directly, or use the apt-install and in-target commands to easily install
+# packages and run commands in the target system.
+d-i preseed/late_command string in-target bash -c '{ echo "#!/bin/bash" ; \
+                                                     echo "set -e" ; \
+                                                     echo "echo deb http://repo.cw-ngv.com/stable binary/ > /etc/apt/sources.list.d/clearwater.list" ; \
+                                                     echo "curl -L http://repo.cw-ngv.com/repo_key | sudo apt-key add -" ; \
+                                                     echo "echo deb http://debian.datastax.com/community stable main > /etc/apt/sources.list.d/cassandra.list" ; \
+                                                     echo "curl -L http://debian.datastax.com/debian/repo_key | sudo apt-key add -" ; \
+                                                     echo "apt-get update" ; \
+                                                     echo "export DEBIAN_FRONTEND=noninteractive" ; \
+                                                     echo "apt-get install -y --force-yes python-cql dsc1.1=1.1.9-1 cassandra=1.1.9 clearwater-auto-config-generic" ; \
+                                                     echo "apt-get install -y --force-yes ellis bono restund sprout homer homestead" ; \
+                                                     echo "export PATH=/usr/share/clearwater/ellis/env/bin:$PATH" ; \
+                                                     echo "cd /usr/share/clearwater/ellis/src/metaswitch/ellis/tools/" ; \
+                                                     echo "python create_numbers.py --start 6505550000 --count 1000" ; \
+                                                     echo "rm /etc/rc2.d/S99zclearwater-aio-first-boot" ; \
+                                                     echo "poweroff" ; } > /etc/rc2.d/S99zclearwater-aio-first-boot ; \
+                                                   chmod a+x /etc/rc2.d/S99zclearwater-aio-first-boot'
+
+# Avoid that last message about the install being complete.
+d-i finish-install/reboot_in_progress note

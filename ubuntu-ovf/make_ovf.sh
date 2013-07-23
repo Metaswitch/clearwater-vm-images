@@ -47,11 +47,26 @@ VBoxHeadless --startvm cw-aio
 # Tidy up the ISO.
 rm $TMP_DIR/ubuntu-remastered.iso
 
-# Export an OVA file.
-rm -rf cw-aio.ova
-VBoxManage export cw-aio --output cw-aio.ova --manifest --vsys 0 --product Clearwater --producturl http://www.projectclearwater.org/ --vendor "Metaswitch Networks" --vendorurl http://www.metaswitch.com/ --version 1.0-$(date +%y%m%d.%H%M%S)
-chmod a+r cw-aio.ova
+# Export an OVF.
+mkdir -p $TMP_DIR/cw-aio.ovf
+VBoxManage export cw-aio --output $TMP_DIR/cw-aio.ovf/cw-aio.ovf --manifest --vsys 0 --product Clearwater --producturl http://www.projectclearwater.org/ --vendor "Metaswitch Networks" --vendorurl http://www.metaswitch.com/ --version 1.0-$(date +%y%m%d.%H%M%S)
 
-# Destroy the virtual machine and the temporary directory.
+# Destroy the virtual machine to free up some space.
 VBoxManage unregistervm cw-aio --delete
+
+# Comment out the VirtualSystemType, as VMware doesn't always accept VirtualBox-generated OVFs.
+sed -e 's/<vssd:VirtualSystemType/<!-- <vssd:VirtualSystemType/g
+        s/<\/vssd:VirtualSystemType>/<\/vssd:VirtualSystemType> -->/g' < $TMP_DIR/cw-aio.ovf/cw-aio.ovf > $TMP_DIR/cw-aio.ovf/cw-aio.ovf.1
+mv $TMP_DIR/cw-aio.ovf/cw-aio.ovf.1 $TMP_DIR/cw-aio.ovf/cw-aio.ovf
+
+# Fix up the manifest.
+grep -v cw-aio.ovf $TMP_DIR/cw-aio.ovf/cw-aio.mf > $TMP_DIR/cw-aio.ovf/cw-aio.mf.1
+echo 'SHA1 (cw-aio.ovf)= '$(sha1sum $TMP_DIR/cw-aio.ovf/cw-aio.ovf | cut -d ' ' -f 1) >> $TMP_DIR/cw-aio.ovf/cw-aio.mf.1
+mv $TMP_DIR/cw-aio.ovf/cw-aio.mf.1 $TMP_DIR/cw-aio.ovf/cw-aio.mf
+
+# Repack the OVF as an OVA file.
+rm -f cw-aio.ova
+tar cf cw-aio.ova -C $TMP_DIR/cw-aio.ovf cw-aio.ovf cw-aio-disk1.vmdk cw-aio.mf
+
+# Tidy up.
 rm -rf $TMP_DIR

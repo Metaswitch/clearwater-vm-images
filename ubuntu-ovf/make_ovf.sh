@@ -5,7 +5,7 @@ set -e
 
 # Make sure we have the required components installed
 apt-get update
-apt-get install -y virtualbox mkisofs
+apt-get install -y virtualbox mkisofs rdesktop
 
 # Decide on a temporary directory.
 TMP_DIR=/tmp/make_ovf.$$

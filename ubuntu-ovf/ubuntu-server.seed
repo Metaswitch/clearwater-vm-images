@@ -108,6 +108,8 @@ d-i preseed/late_command string in-target bash -c '{ echo "#!/bin/bash" ; \
                                                      echo "apt-get update" ; \
                                                      echo "export DEBIAN_FRONTEND=noninteractive" ; \
                                                      echo "apt-get install -y --force-yes python-cql dsc1.1=1.1.9-1 cassandra=1.1.9 clearwater-auto-config-generic" ; \
+                                                     echo "sed -i 's/\"1024\"/\"256\"/' /etc/cassandra/cassandra-env.sh" ; \
+                                                     echo "service cassandra restart" ; \
                                                      echo "apt-get install -y --force-yes ellis bono restund sprout homer homestead" ; \
                                                      echo "export PATH=/usr/share/clearwater/ellis/env/bin:$PATH" ; \
                                                      echo "cd /usr/share/clearwater/ellis/src/metaswitch/ellis/tools/" ; \

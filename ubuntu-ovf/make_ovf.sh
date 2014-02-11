@@ -40,9 +40,13 @@ VBoxManage storagectl cw-aio --name "IDE Controller" --add ide
 VBoxManage storageattach cw-aio --storagectl "IDE Controller" --port 0 --device 0 --type hdd --medium $TMP_DIR/cw-aio.vmdk
 VBoxManage storageattach cw-aio --storagectl "IDE Controller" --port 1 --device 0 --type dvddrive --medium $TMP_DIR/ubuntu-remastered.iso
 
-# Start the virtual machine headless, blocking until the installation is complete and the system powers down.
+# Start the virtual machine, blocking until the installation is complete and the system powers down.
 # If this hangs, it's probably that the installation has failed.
-VBoxHeadless --startvm cw-aio
+if [ "$DISPLAY" != "" ] ; then
+  VirtualBox --startvm cw-aio
+else
+  VBoxHeadless --startvm cw-aio
+fi
 
 # Tidy up the ISO.
 rm $TMP_DIR/ubuntu-remastered.iso

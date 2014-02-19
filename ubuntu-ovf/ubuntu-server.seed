@@ -56,7 +56,7 @@ d-i partman-auto/method string regular
 # (logical) line.
 d-i partman-auto/expert_recipe string                         \
       boot-root ::                                            \
-              8000 1 8000 ext4                                \
+              2500 1 2500 ext4                                \
                       $primary{ } $bootable{ }                \
                       method{ format } format{ }              \
                       use_filesystem{ } filesystem{ ext4 }    \

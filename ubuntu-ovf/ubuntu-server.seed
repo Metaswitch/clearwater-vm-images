@@ -101,7 +101,8 @@ pkgsel  pkgsel/include  string openssh-server curl
 # packages and run commands in the target system.
 d-i preseed/late_command string in-target bash -c '{ echo "#!/bin/bash" ; \
                                                      echo "set -e" ; \
-                                                     echo "echo deb http://repo.cw-ngv.com/stable binary/ > /etc/apt/sources.list.d/clearwater.list" ; \
+                                                     echo "repo=... # filled in by make_ovf.sh" ; \
+                                                     echo "echo deb \$repo binary/ > /etc/apt/sources.list.d/clearwater.list" ; \
                                                      echo "curl -L http://repo.cw-ngv.com/repo_key | sudo apt-key add -" ; \
                                                      echo "apt-get update" ; \
                                                      echo "export DEBIAN_FRONTEND=noninteractive" ; \

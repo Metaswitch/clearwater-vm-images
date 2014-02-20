@@ -3,6 +3,10 @@
 # Give up on failure.
 set -e
 
+repo=$1
+[ -n "$repo" ] || repo=http://repo.cw-ngv.com/stable
+echo Building from repo $repo...
+
 # Make sure we have the required components installed
 apt-get update
 apt-get install -y virtualbox mkisofs rdesktop
@@ -24,9 +28,9 @@ cp -aR $TMP_DIR/ubuntu/. $TMP_DIR/ubuntu-remastered/
 umount $TMP_DIR/ubuntu
 rm -rf $TMP_DIR/ubuntu
 
-# Overlay the isolinux and preseed configuration.
+# Overlay the isolinux and preseed configuration, fixing up the repo server.
 cp isolinux.cfg $TMP_DIR/ubuntu-remastered/isolinux/
-cp ubuntu-server.seed $TMP_DIR/ubuntu-remastered/preseed/
+sed -e "s!repo=...!repo=$repo!g" ubuntu-server.seed > $TMP_DIR/ubuntu-remastered/preseed/ubuntu-server.seed
 
 # Build a remastered ISO, and remove the local directory copy.
 mkisofs -r -V "Ubuntu Remastered" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -input-charset utf-8 -o $TMP_DIR/ubuntu-remastered.iso $TMP_DIR/ubuntu-remastered/

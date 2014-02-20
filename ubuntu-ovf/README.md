@@ -18,4 +18,6 @@ To run the tool, change to this directory and run `sudo ./make_ovf.sh`.  If all 
 
 The resulting OVA file is `cw-aio.ova`, in this directory.
 
-Note that the installation process can take around half an hour, and will hang if it fails.  Generally, installation shouldn't fail as long as the Clearwater packages install OK on other platforms.  However, if this does happen you can see what's going on by running `rdesktop 127.0.0.1:3389` to display the console.  It's most likely you'll be at a login prompt, in which case Ubuntu has installed but Clearwater has failed.  You can log in as `ubuntu`/`cw-aio` and then run `sudo /etc/rc2.d/S99zclearwater-aio-first-boot` to retry the install (and see the error message).
+Note that the installation process can take around half an hour, and will hang if it fails.  Generally, installation shouldn't fail as long as the Clearwater packages install OK on other platforms.  However, if this does happen you can see what's going on by looking at the VM console window (which should be on screen).  It's most likely you'll be at a login prompt, in which case Ubuntu has installed but Clearwater has failed.  You can log in as `ubuntu`/`cw-aio` and then run `sudo /etc/rc2.d/S99zclearwater-aio-first-boot` to retry the install (and see the error message).
+
+`make_ovf.sh` accepts an optional command-line parameter that specifies which repo to build from.  The default is http://repo.cw-ngv.com/stable.

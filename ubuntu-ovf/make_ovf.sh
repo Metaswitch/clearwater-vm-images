@@ -34,7 +34,7 @@ rm -rf ubuntu-remastered
 
 # Create and configure the virtual machine in VirtualBox.
 VBoxManage createvm --name cw-aio --ostype Ubuntu_64 --register --basefolder $TMP_DIR
-VBoxManage modifyvm cw-aio --memory 1652 --acpi on --boot1 dvd --nic1 nat --natpf1 "ssh,tcp,,8022,,22" --natpf1 "http,tcp,,8080,,80" --natpf1 "sip,tcp,,8060,,5060"
+VBoxManage modifyvm cw-aio --memory 1652 --acpi on --boot1 dvd --nic1 nat --natpf1 "ssh,tcp,,8022,,22" --natpf1 "http,tcp,,8080,,80" --natpf1 "sip,tcp,,8060,,5060" --natpf1 "snmp,udp,,8161,,161"
 VBoxManage createhd --filename $TMP_DIR/cw-aio.vmdk --size 8000 --format VMDK
 VBoxManage storagectl cw-aio --name "IDE Controller" --add ide
 VBoxManage storageattach cw-aio --storagectl "IDE Controller" --port 0 --device 0 --type hdd --medium $TMP_DIR/cw-aio.vmdk

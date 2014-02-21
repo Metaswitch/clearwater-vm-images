@@ -106,7 +106,7 @@ d-i preseed/late_command string in-target bash -c '{ echo "#!/bin/bash" ; \
                                                      echo "apt-get update" ; \
                                                      echo "export DEBIAN_FRONTEND=noninteractive" ; \
                                                      echo "apt-get install -y --force-yes clearwater-cassandra clearwater-auto-config-generic" ; \
-                                                     echo "apt-get install -y --force-yes ellis bono restund sprout homer homestead homestead-prov" ; \
+                                                     echo "apt-get install -y --force-yes ellis bono restund sprout homer homestead homestead-prov clearwater-snmp-handler-bono clearwater-snmp-handler-sprout" ; \
                                                      echo "export PATH=/usr/share/clearwater/ellis/env/bin:$PATH" ; \
                                                      echo "cd /usr/share/clearwater/ellis/src/metaswitch/ellis/tools/" ; \
                                                      echo "python create_numbers.py --start 6505550000 --count 1000" ; \

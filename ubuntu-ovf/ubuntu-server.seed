@@ -102,7 +102,7 @@ pkgsel  pkgsel/include  string openssh-server curl
 d-i preseed/late_command string in-target bash -c '{ echo "#!/bin/bash" ; \
                                                      echo "set -e" ; \
                                                      echo "repo=... # filled in by make_ovf.sh" ; \
-                                                     echo "curl -L https://raw.githubusercontent.com/Metaswitch/clearwater-infrastructure/chef_192/scripts/clearwater-aio-install.sh | sudo bash -s clearwater-auto-config-generic $repo" ; \
+                                                     echo "curl -L https://raw.githubusercontent.com/Metaswitch/clearwater-infrastructure/master/scripts/clearwater-aio-install.sh | sudo bash -s clearwater-auto-config-generic $repo" ; \
                                                      echo "rm /etc/rc2.d/S99zclearwater-aio-first-boot" ; \
                                                      echo "poweroff" ; } > /etc/rc2.d/S99zclearwater-aio-first-boot ; \
                                                    chmod a+x /etc/rc2.d/S99zclearwater-aio-first-boot'

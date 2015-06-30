@@ -2,6 +2,7 @@
 
 # Give up on failure.
 set -e
+os_image=http://releases.ubuntu.com/14.04.2/ubuntu-14.04.2-server-amd64.iso
 
 repo=$1
 [ -n "$repo" ] || repo=http://repo.cw-ngv.com/stable
@@ -16,7 +17,7 @@ TMP_DIR=/tmp/make_ovf.$$
 mkdir $TMP_DIR
 
 # Pull down and unpack the Ubuntu LTS ISO.
-[ -f ubuntu.iso ] || wget -O ubuntu.iso http://www.ubuntu.com/start-download\?distro=server\&bits=64\&release=lts
+[ -f ubuntu.iso ] || wget -O ubuntu.iso $os_image
 mkdir $TMP_DIR/ubuntu
 mount ubuntu.iso $TMP_DIR/ubuntu -o loop,ro
 

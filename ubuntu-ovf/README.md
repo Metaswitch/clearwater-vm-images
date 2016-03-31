@@ -7,7 +7,7 @@ You'll need a physical (non-VM-ed) 64-bit Ubuntu box.  This is because we genera
 To run the tool, change to this directory and run `sudo ./make_ovf.sh`.  If all goes well, it should
 
 *   install VirtualBox (if not already installed)
-*   download the Ubuntu 12.04 ISO (if not already downloaded)
+*   download the Ubuntu 14.04 ISO (if not already downloaded)
 *   remaster it so that it automatically installs Clearwater and then powers down
 *   create a virtual machine under VirtualBox
 *   boot the virtual machine off the remastered ISO
